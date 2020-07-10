@@ -1,43 +1,30 @@
-use juniper::FieldResult;
-use juniper::RootNode;
-
-#[derive(GraphQLEnum)]
-enum Episode {
-    NewHope,
-    Empire,
-    Jedi,
-}
-
-use juniper::{GraphQLEnum, GraphQLInputObject, GraphQLObject};
+use juniper::{RootNode, FieldResult, GraphQLObject, GraphQLInputObject};
 
 #[derive(GraphQLObject)]
-#[graphql(description = "A humanoid creature in the Star Wars universe")]
-struct Human {
+struct ToDo {
     id: String,
-    name: String,
-    appears_in: Vec<Episode>,
-    home_planet: String,
+    done: bool,
+    label: String,
 }
 
 #[derive(GraphQLInputObject)]
 #[graphql(description = "A humanoid creature in the Star Wars universe")]
-struct NewHuman {
-    name: String,
-    appears_in: Vec<Episode>,
-    home_planet: String,
+struct NewToDo {
+    label: String,
 }
 
 pub struct QueryRoot;
 
 #[juniper::object]
 impl QueryRoot {
-    fn human(id: String) -> FieldResult<Human> {
-        Ok(Human {
-            id: "1234".to_owned(),
-            name: "Luke".to_owned(),
-            appears_in: vec![Episode::NewHope],
-            home_planet: "Mars".to_owned(),
-        })
+    fn to_do_list() -> FieldResult<Vec<ToDo>> {
+        Ok(vec![
+            ToDo {
+                id: "1".to_owned(),
+                label: "Groceries".to_owned(),
+                done: false,
+            },
+        ])
     }
 }
 
@@ -45,12 +32,11 @@ pub struct MutationRoot;
 
 #[juniper::object]
 impl MutationRoot {
-    fn create_human(new_human: NewHuman) -> FieldResult<Human> {
-        Ok(Human {
-            id: "1234".to_owned(),
-            name: new_human.name,
-            appears_in: new_human.appears_in,
-            home_planet: new_human.home_planet,
+    fn add_to_do(to_do: NewToDo) -> FieldResult<ToDo> {
+        Ok(ToDo {
+            id: "1".to_owned(),
+            label: "Groceries".to_owned(),
+            done: false,
         })
     }
 }
