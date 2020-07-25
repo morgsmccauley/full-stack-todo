@@ -4,4 +4,4 @@ CREATE TABLE todo (
 );
 
 INSERT INTO todo (id, label)
-VALUES ('1', 'Groceries')
+VALUES ('1', 'Groceries'), ('2', 'Cleaning'), ('3', 'Cooking')

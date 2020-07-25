@@ -1,6 +1,6 @@
+use super::database::DbPoolConnection;
 use diesel::prelude::*;
-use diesel::r2d2::{self, ConnectionManager};
-use juniper::{FieldResult, GraphQLInputObject, GraphQLObject, RootNode};
+use juniper::{FieldResult, GraphQLObject, RootNode};
 use serde::Serialize;
 
 #[derive(GraphQLObject, Debug, Clone, Serialize, Queryable)]
@@ -9,22 +9,13 @@ pub struct ToDo {
     label: String,
 }
 
-#[derive(GraphQLInputObject)]
-struct NewToDo {
-    label: String,
-}
-
-pub struct QueryRoot;
-
-pub type DbPool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
-
-pub type DbPoolConnection = r2d2::PooledConnection<ConnectionManager<SqliteConnection>>;
-
 pub struct Context {
     pub db: DbPoolConnection,
 }
 
 impl juniper::Context for Context {}
+
+pub struct QueryRoot;
 
 #[juniper::object(context = Context)]
 impl QueryRoot {
@@ -38,7 +29,7 @@ pub struct MutationRoot;
 
 #[juniper::object(context = Context)]
 impl MutationRoot {
-    fn add_to_do(context: &Context) -> FieldResult<ToDo> {
+    fn add_to_do(context: &Context, label: String) -> FieldResult<ToDo> {
         Ok(ToDo {
             id: "1".to_owned(),
             label: "Groceries".to_owned(),
