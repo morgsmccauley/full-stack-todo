@@ -1,6 +1,7 @@
 use diesel::prelude::*;
 use juniper::{FieldResult, GraphQLObject, RootNode};
 use serde::Serialize;
+use uuid::Uuid;
 use crate::diesel_schema::to_dos::{self, dsl};
 use crate::database::DbPoolConnection;
 
@@ -31,7 +32,7 @@ pub struct MutationRoot;
 impl MutationRoot {
     fn add_to_do(context: &Context, label: String) -> FieldResult<ToDo> {
         let to_do = ToDo {
-            id: "4".to_string(),
+            id: Uuid::new_v4().to_string(),
             label,
         };
         diesel::insert_into(dsl::to_dos).values(&to_do).execute(&context.db_conn)?;
