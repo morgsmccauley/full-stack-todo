@@ -24,6 +24,10 @@ impl QueryRoot {
     fn to_do(context: &Context, id: String) -> FieldResult<ToDo> {
         Ok(dsl::to_dos.filter(dsl::id.eq(id)).first::<ToDo>(&context.db_conn)?)
     }
+
+    fn to_dos(context: &Context) -> FieldResult<Vec<ToDo>> {
+        Ok(dsl::to_dos.load::<ToDo>(&context.db_conn)?)
+    }
 }
 
 pub struct MutationRoot;
