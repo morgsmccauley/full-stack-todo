@@ -28,7 +28,7 @@ async fn graphql(
     data: web::Json<GraphQLRequest>,
 ) -> Result<HttpResponse, Error> {
     let context = Context {
-        db: pool.get().expect("Couldn't get db connection from pool"),
+        db_conn: pool.get().expect("Couldn't get db connection from pool"),
     };
 
     Ok(HttpResponse::Ok().content_type("application/json").body(

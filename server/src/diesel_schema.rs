@@ -1,5 +1,5 @@
 table! {
-    todo (id) {
+    to_dos (id) {
         id -> Text,
         label -> Text,
     }
