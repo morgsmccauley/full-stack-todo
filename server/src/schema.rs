@@ -1,42 +1,47 @@
-use juniper::{RootNode, FieldResult, GraphQLObject, GraphQLInputObject};
+use diesel::prelude::*;
+use diesel::r2d2::{self, ConnectionManager};
+use juniper::{FieldResult, GraphQLInputObject, GraphQLObject, RootNode};
+use serde::Serialize;
 
-#[derive(GraphQLObject)]
-struct ToDo {
+#[derive(GraphQLObject, Debug, Clone, Serialize, Queryable)]
+pub struct ToDo {
     id: String,
-    done: bool,
     label: String,
 }
 
 #[derive(GraphQLInputObject)]
-#[graphql(description = "A humanoid creature in the Star Wars universe")]
 struct NewToDo {
     label: String,
 }
 
 pub struct QueryRoot;
 
-#[juniper::object]
+pub type DbPool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
+
+pub type DbPoolConnection = r2d2::PooledConnection<ConnectionManager<SqliteConnection>>;
+
+pub struct Context {
+    pub db: DbPoolConnection,
+}
+
+impl juniper::Context for Context {}
+
+#[juniper::object(context = Context)]
 impl QueryRoot {
-    fn to_do_list() -> FieldResult<Vec<ToDo>> {
-        Ok(vec![
-            ToDo {
-                id: "1".to_owned(),
-                label: "Groceries".to_owned(),
-                done: false,
-            },
-        ])
+    fn to_do(context: &Context, uuid: String) -> FieldResult<ToDo> {
+        use crate::diesel_schema::todo::dsl::*;
+        Ok(todo.filter(id.eq(uuid)).first::<ToDo>(&context.db)?)
     }
 }
 
 pub struct MutationRoot;
 
-#[juniper::object]
+#[juniper::object(context = Context)]
 impl MutationRoot {
-    fn add_to_do(to_do: NewToDo) -> FieldResult<ToDo> {
+    fn add_to_do(context: &Context) -> FieldResult<ToDo> {
         Ok(ToDo {
             id: "1".to_owned(),
             label: "Groceries".to_owned(),
-            done: false,
         })
     }
 }
