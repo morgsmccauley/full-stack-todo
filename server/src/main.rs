@@ -8,8 +8,8 @@ use std::io;
 use std::sync::Arc;
 
 use database::pool::{create_pool, DbPool};
-use graphql::schema::{create_schema, Schema};
 use graphql::context::Context;
+use graphql::schema::{create_schema, Schema};
 
 mod database;
 mod graphql;

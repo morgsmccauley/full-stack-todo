@@ -1,8 +1,8 @@
-use uuid::Uuid;
-use diesel::prelude::*;
-use crate::database::schema::to_dos::dsl;
 use crate::database::pool::DbPoolConnection;
+use crate::database::schema::to_dos::dsl;
 use crate::models::ToDo;
+use diesel::prelude::*;
+use uuid::Uuid;
 
 pub fn find_to_do(id: String, conn: &DbPoolConnection) -> Result<ToDo, diesel::result::Error> {
     dsl::to_dos.find(id).first::<ToDo>(conn)
@@ -26,7 +26,12 @@ pub fn create_to_do(label: String, conn: &DbPoolConnection) -> Result<ToDo, dies
     Ok(to_do)
 }
 
-pub fn update_to_do(id: String, label: Option<String>, done: Option<bool>, conn: &DbPoolConnection) -> Result<ToDo, diesel::result::Error> {
+pub fn update_to_do(
+    id: String,
+    label: Option<String>,
+    done: Option<bool>,
+    conn: &DbPoolConnection,
+) -> Result<ToDo, diesel::result::Error> {
     let to_do = find_to_do(id.clone(), conn)?;
 
     let updated_to_do = ToDo {

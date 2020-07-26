@@ -1,7 +1,7 @@
-use crate::models::ToDo;
-use crate::database::actions::*;
-use juniper::{FieldResult, GraphQLObject, RootNode};
 use super::context::Context;
+use crate::database::actions::*;
+use crate::models::ToDo;
+use juniper::{FieldResult, GraphQLObject, RootNode};
 
 #[derive(GraphQLObject)]
 struct DeleteToDoResult {
