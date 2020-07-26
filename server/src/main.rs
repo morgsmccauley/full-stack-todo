@@ -8,13 +8,11 @@ use std::io;
 use std::sync::Arc;
 
 use database::{Database, DbPool};
-use schema::Context;
+use graphql_schema::{Context, Schema, create_schema};
 
 mod database;
 mod diesel_schema;
-mod schema;
-
-use crate::schema::{create_schema, Schema};
+mod graphql_schema;
 
 async fn graphiql() -> HttpResponse {
     HttpResponse::Ok()
