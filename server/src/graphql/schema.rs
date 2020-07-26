@@ -1,16 +1,7 @@
-use crate::database::schema::to_dos;
+use crate::models::ToDo;
 use crate::database::actions::*;
 use juniper::{FieldResult, GraphQLObject, RootNode};
-use serde::Serialize;
 use super::context::Context;
-
-// Where does this belong?
-#[derive(GraphQLObject, Debug, Clone, Serialize, Queryable, Insertable, AsChangeset)]
-pub struct ToDo {
-    pub id: String,
-    pub label: String,
-    pub done: bool,
-}
 
 #[derive(GraphQLObject)]
 struct DeleteToDoResult {

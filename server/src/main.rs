@@ -13,6 +13,7 @@ use graphql::context::Context;
 
 mod database;
 mod graphql;
+mod models;
 
 async fn graphiql() -> HttpResponse {
     HttpResponse::Ok()

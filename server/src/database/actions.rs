@@ -2,7 +2,7 @@ use uuid::Uuid;
 use diesel::prelude::*;
 use crate::database::schema::to_dos::dsl;
 use crate::database::pool::DbPoolConnection;
-use crate::graphql::schema::ToDo;
+use crate::models::ToDo;
 
 pub fn find_to_do(id: String, conn: &DbPoolConnection) -> Result<ToDo, diesel::result::Error> {
     dsl::to_dos.find(id).first::<ToDo>(conn)
