@@ -12,6 +12,12 @@ pub struct ToDo {
     done: bool,
 }
 
+#[derive(GraphQLObject)]
+struct DeleteToDoResult {
+    ok: bool,
+    to_do: ToDo,
+}
+
 pub struct Context {
     pub db_conn: DbPoolConnection,
 }
@@ -70,6 +76,14 @@ impl Mutation {
             .execute(&context.db_conn)?;
 
         Ok(updated_to_do)
+    }
+
+    fn delete_to_do(context: &Context, id: String) -> FieldResult<DeleteToDoResult> {
+        let to_do = dsl::to_dos
+            .find(id.clone())
+            .first::<ToDo>(&context.db_conn)?;
+        diesel::delete(dsl::to_dos.find(id.clone())).execute(&context.db_conn)?;
+        Ok(DeleteToDoResult { ok: true, to_do })
     }
 }
 

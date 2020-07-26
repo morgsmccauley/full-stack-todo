@@ -8,7 +8,7 @@ use std::io;
 use std::sync::Arc;
 
 use database::{Database, DbPool};
-use graphql_schema::{Context, Schema, create_schema};
+use graphql_schema::{create_schema, Context, Schema};
 
 mod database;
 mod diesel_schema;
