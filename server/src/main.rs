@@ -7,12 +7,12 @@ use juniper::http::GraphQLRequest;
 use std::io;
 use std::sync::Arc;
 
-use database::{Database, DbPool};
-use graphql_schema::{create_schema, Context, Schema};
+use database::pool::{create_pool, DbPool};
+use graphql::schema::{create_schema, Schema};
+use graphql::context::Context;
 
 mod database;
-mod diesel_schema;
-mod graphql_schema;
+mod graphql;
 
 async fn graphiql() -> HttpResponse {
     HttpResponse::Ok()
@@ -44,12 +44,12 @@ async fn main() -> io::Result<()> {
     env_logger::init();
 
     let schema = std::sync::Arc::new(create_schema());
-    let database = Database::new();
+    let pool = create_pool();
 
     HttpServer::new(move || {
         App::new()
             .data(schema.clone())
-            .data(database.pool.clone())
+            .data(pool.clone())
             .wrap(middleware::Logger::default())
             .service(web::resource("/graphql").route(web::post().to(graphql)))
             .service(web::resource("/graphiql").route(web::get().to(graphiql)))

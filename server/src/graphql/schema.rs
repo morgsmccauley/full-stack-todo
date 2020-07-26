@@ -1,9 +1,9 @@
-use crate::database::DbPoolConnection;
-use crate::diesel_schema::to_dos::{self, dsl};
+use crate::database::schema::to_dos::{self, dsl};
 use diesel::prelude::*;
 use juniper::{FieldResult, GraphQLObject, RootNode};
 use serde::Serialize;
 use uuid::Uuid;
+use super::context::Context;
 
 #[derive(GraphQLObject, Debug, Clone, Serialize, Queryable, Insertable, AsChangeset)]
 pub struct ToDo {
@@ -17,12 +17,6 @@ struct DeleteToDoResult {
     ok: bool,
     to_do: ToDo,
 }
-
-pub struct Context {
-    pub db_conn: DbPoolConnection,
-}
-
-impl juniper::Context for Context {}
 
 pub struct Query;
 
