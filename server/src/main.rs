@@ -7,6 +7,7 @@ use juniper::http::GraphQLRequest;
 use std::io;
 use std::sync::Arc;
 
+use database::actions::Actions;
 use database::pool::{create_pool, DbPool};
 use graphql::context::Context;
 use graphql::schema::{create_schema, Schema};
@@ -26,8 +27,9 @@ async fn graphql(
     pool: web::Data<DbPool>,
     data: web::Json<GraphQLRequest>,
 ) -> Result<HttpResponse, Error> {
+    let db_conn = pool.get().expect("Couldn't get db connection from pool");
     let context = Context {
-        db_conn: pool.get().expect("Couldn't get db connection from pool"),
+        actions: Actions::new(db_conn),
     };
 
     Ok(HttpResponse::Ok().content_type("application/json").body(

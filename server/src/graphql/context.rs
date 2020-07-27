@@ -1,7 +1,7 @@
-use crate::database::pool::DbPoolConnection;
+use crate::database::actions::Actions;
 
 pub struct Context {
-    pub db_conn: DbPoolConnection,
+    pub actions: Actions,
 }
 
 impl juniper::Context for Context {}

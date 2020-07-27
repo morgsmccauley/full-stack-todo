@@ -4,52 +4,62 @@ use crate::models::ToDo;
 use diesel::prelude::*;
 use uuid::Uuid;
 
-pub fn find_to_do(id: String, conn: &DbPoolConnection) -> Result<ToDo, diesel::result::Error> {
-    dsl::to_dos.find(id).first::<ToDo>(conn)
+pub struct Actions {
+    db_conn: DbPoolConnection,
 }
 
-pub fn load_all_to_dos(conn: &DbPoolConnection) -> Result<Vec<ToDo>, diesel::result::Error> {
-    dsl::to_dos.load::<ToDo>(conn)
-}
+impl Actions {
+    pub fn new(conn: DbPoolConnection) -> Self {
+        Actions { db_conn: conn }
+    }
 
-pub fn create_to_do(label: String, conn: &DbPoolConnection) -> Result<ToDo, diesel::result::Error> {
-    let to_do = ToDo {
-        id: Uuid::new_v4().to_string(),
-        done: false,
-        label,
-    };
+    pub fn find_to_do(&self, id: String) -> Result<ToDo, diesel::result::Error> {
+        dsl::to_dos.find(id).first::<ToDo>(&self.db_conn)
+    }
 
-    diesel::insert_into(dsl::to_dos)
-        .values(&to_do)
-        .execute(conn)?;
+    pub fn load_all_to_dos(&self) -> Result<Vec<ToDo>, diesel::result::Error> {
+        dsl::to_dos.load::<ToDo>(&self.db_conn)
+    }
 
-    Ok(to_do)
-}
+    pub fn create_to_do(&self, label: String) -> Result<ToDo, diesel::result::Error> {
+        let to_do = ToDo {
+            id: Uuid::new_v4().to_string(),
+            done: false,
+            label,
+        };
 
-pub fn update_to_do(
-    id: String,
-    label: Option<String>,
-    done: Option<bool>,
-    conn: &DbPoolConnection,
-) -> Result<ToDo, diesel::result::Error> {
-    let to_do = find_to_do(id.clone(), conn)?;
+        diesel::insert_into(dsl::to_dos)
+            .values(&to_do)
+            .execute(&self.db_conn)?;
 
-    let updated_to_do = ToDo {
-        id,
-        label: label.unwrap_or(to_do.label),
-        done: done.unwrap_or(to_do.done),
-    };
+        Ok(to_do)
+    }
 
-    diesel::update(dsl::to_dos)
-        .set(&updated_to_do)
-        .execute(conn)?;
+    pub fn update_to_do(
+        &self,
+        id: String,
+        label: Option<String>,
+        done: Option<bool>,
+    ) -> Result<ToDo, diesel::result::Error> {
+        let to_do = self.find_to_do(id.clone())?;
 
-    Ok(updated_to_do)
-}
+        let updated_to_do = ToDo {
+            id,
+            label: label.unwrap_or(to_do.label),
+            done: done.unwrap_or(to_do.done),
+        };
 
-pub fn delete_to_do(id: String, conn: &DbPoolConnection) -> Result<ToDo, diesel::result::Error> {
-    let to_do = find_to_do(id.clone(), conn)?;
-    diesel::delete(dsl::to_dos.find(id)).execute(conn)?;
+        diesel::update(dsl::to_dos)
+            .set(&updated_to_do)
+            .execute(&self.db_conn)?;
 
-    Ok(to_do)
+        Ok(updated_to_do)
+    }
+
+    pub fn delete_to_do(&self, id: String) -> Result<ToDo, diesel::result::Error> {
+        let to_do = self.find_to_do(id.clone())?;
+        diesel::delete(dsl::to_dos.find(id)).execute(&self.db_conn)?;
+
+        Ok(to_do)
+    }
 }
