@@ -1,61 +1,25 @@
 #[macro_use]
 extern crate diesel;
 
-use actix_web::{middleware, web, App, Error, HttpResponse, HttpServer};
-use juniper::http::graphiql::graphiql_source;
-use juniper::http::GraphQLRequest;
+use actix_web::{middleware, App, HttpServer};
 use std::io;
-use std::sync::Arc;
 
-use database::actions::Actions;
-use database::pool::{create_pool, DbPool};
-use graphql::context::Context;
-use graphql::schema::{create_schema, Schema};
+use routes::route_config;
 
 mod database;
 mod graphql;
 mod models;
-
-async fn graphiql() -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type("text/html; charset=utf-8")
-        .body(graphiql_source("http://127.0.0.1:8080/graphql"))
-}
-
-async fn graphql(
-    schema: web::Data<Arc<Schema>>,
-    pool: web::Data<DbPool>,
-    data: web::Json<GraphQLRequest>,
-) -> Result<HttpResponse, Error> {
-    let db_conn = pool.get().expect("Couldn't get db connection from pool");
-    let context = Context {
-        actions: Actions::new(db_conn),
-    };
-
-    Ok(HttpResponse::Ok().content_type("application/json").body(
-        web::block(move || {
-            let res = data.execute(&schema, &context);
-            Ok::<_, serde_json::error::Error>(serde_json::to_string(&res)?)
-        })
-        .await?,
-    ))
-}
+mod routes;
 
 #[actix_rt::main]
 async fn main() -> io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
 
-    let schema = std::sync::Arc::new(create_schema());
-    let pool = create_pool();
-
     HttpServer::new(move || {
         App::new()
-            .data(schema.clone())
-            .data(pool.clone())
             .wrap(middleware::Logger::default())
-            .service(web::resource("/graphql").route(web::post().to(graphql)))
-            .service(web::resource("/graphiql").route(web::get().to(graphiql)))
+            .configure(route_config)
     })
     .bind("127.0.0.1:8080")?
     .run()
