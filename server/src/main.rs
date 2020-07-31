@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate diesel;
 
+use actix_cors::Cors;
 use actix_web::{middleware, App, HttpServer};
 use std::io;
 
@@ -19,6 +20,7 @@ async fn main() -> io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .wrap(middleware::Logger::default())
+            .wrap(Cors::new().finish())
             .configure(route_config)
     })
     .bind("127.0.0.1:8080")?
