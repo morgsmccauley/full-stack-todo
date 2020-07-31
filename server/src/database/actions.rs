@@ -44,12 +44,12 @@ impl Actions {
         let to_do = self.find_to_do(id.clone())?;
 
         let updated_to_do = ToDo {
-            id,
+            id: id.clone(),
             label: label.unwrap_or(to_do.label),
             done: done.unwrap_or(to_do.done),
         };
 
-        diesel::update(dsl::to_dos)
+        diesel::update(dsl::to_dos.find(id))
             .set(&updated_to_do)
             .execute(&self.db_conn)?;
 
