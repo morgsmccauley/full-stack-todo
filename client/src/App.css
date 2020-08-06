@@ -2,6 +2,14 @@
   text-align: center;
 }
 
+.to-do {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 200px;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
