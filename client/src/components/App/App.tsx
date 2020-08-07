@@ -7,17 +7,17 @@ import { UpdateToDo, UpdateToDoVariables } from '../../types/UpdateToDo';
 import { AllToDos } from '../../graphql/queries';
 import { UpdateToDo as UpdateToDoMutation } from '../../graphql/mutations';
 
-import ToDoList from '../ToDoList';
+import AddButton from '../AddButton';
+import List from '../List';
+import ToDoItem from '../ToDoItem';
 
 import './App.css';
 
 function App() {
-  const { data } = useQuery<ToDos>(AllToDos);
+  const { data: { toDos = [] } = {} } = useQuery<ToDos>(AllToDos);
   const [updateToDo] = useMutation<UpdateToDo, UpdateToDoVariables>(
     UpdateToDoMutation,
   );
-
-  const { toDos } = data ?? {};
 
   const handleToDoUpdate = ({ id, done, label }: UpdateToDoVariables) => {
     updateToDo({
@@ -32,9 +32,17 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {toDos && (
-          <ToDoList toDos={toDos} handleToDoUpdate={handleToDoUpdate} />
-        )}
+        <List
+          items={toDos}
+          renderItem={(item) => (
+            <ToDoItem
+              toDo={item}
+              handleDoneChange={(id, done) => handleToDoUpdate({ id, done })}
+              handleLabelChange={(id, label) => handleToDoUpdate({ id, label })}
+            />
+          )}
+        />
+        <AddButton />
       </header>
     </div>
   );
