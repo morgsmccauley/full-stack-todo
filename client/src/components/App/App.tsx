@@ -7,10 +7,9 @@ import {
   updateToDo as updateToDoMutation,
   UpdateToDo,
   UpdateToDoVariables,
-  addToDo as addToDoMutation,
-  AddToDo,
-  AddToDoVariables,
 } from '../../graphql/mutations';
+
+import { useMutationAddToDo } from '../../hooks';
 
 import AddButton from '../AddButton';
 import List from '../List';
@@ -24,7 +23,7 @@ function App() {
   const [updateToDo] = useMutation<UpdateToDo, UpdateToDoVariables>(
     updateToDoMutation,
   );
-  const [addToDo] = useMutation<AddToDo, AddToDoVariables>(addToDoMutation);
+  const [addToDo] = useMutationAddToDo();
 
   const handleUpdateToDo = ({ id, done, label }: UpdateToDoVariables) => {
     updateToDo({
