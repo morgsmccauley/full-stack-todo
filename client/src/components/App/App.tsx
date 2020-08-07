@@ -4,17 +4,17 @@ import { useQuery, useMutation } from '@apollo/client';
 import { ToDos } from '../../types/ToDos';
 import { UpdateToDo, UpdateToDoVariables } from '../../types/UpdateToDo';
 
-import * as queries from '../../graphql/queries';
-import * as mutations from '../../graphql/mutations';
+import { AllToDos } from '../../graphql/queries';
+import { UpdateToDo as UpdateToDoMutation } from '../../graphql/mutations';
 
 import ToDoList from '../ToDoList';
 
 import './App.css';
 
 function App() {
-  const { data } = useQuery<ToDos>(queries.AllToDos);
+  const { data } = useQuery<ToDos>(AllToDos);
   const [updateToDo] = useMutation<UpdateToDo, UpdateToDoVariables>(
-    mutations.UpdateToDo,
+    UpdateToDoMutation,
   );
 
   const { toDos } = data ?? {};
