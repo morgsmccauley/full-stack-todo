@@ -1,4 +1,5 @@
 import React from 'react';
+import { Checkbox, TextField } from '@material-ui/core';
 
 import { ToDos_toDos as ToDos } from '../../types/ToDos';
 
@@ -14,15 +15,13 @@ const ToDoItem = ({
   handleLabelChange,
 }: ToDoItemProps) => (
   <div key={toDo.id} className="to-do">
-    <input
-      type="text"
-      value={toDo.label}
-      onChange={(e) => handleLabelChange(toDo.id, e.target.value)}
-    />
-    <input
-      type="checkbox"
+    <Checkbox
       checked={toDo.done}
       onChange={(e) => handleDoneChange(toDo.id, e.target.checked)}
+    />
+    <TextField
+      value={toDo.label}
+      onChange={(e) => handleLabelChange(toDo.id, e.target.value)}
     />
   </div>
 );
