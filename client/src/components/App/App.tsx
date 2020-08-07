@@ -53,8 +53,12 @@ function App() {
             <ToDoItem
               key={item.id}
               toDo={item}
-              handleDoneChange={(id, done) => handleUpdateToDo({ id, done })}
-              handleLabelChange={(id, label) => handleUpdateToDo({ id, label })}
+              handleDoneChange={(done) =>
+                handleUpdateToDo({ id: item.id, done })
+              }
+              handleLabelChange={(label) =>
+                handleUpdateToDo({ id: item.id, label })
+              }
             />
           )}
         />

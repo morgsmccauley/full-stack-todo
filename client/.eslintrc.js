@@ -20,9 +20,10 @@ module.exports = {
   rules: {
     'prettier/prettier': 'error',
     'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': [2],
-    'react/jsx-filename-extension': [2, { extensions: ['.tsx'] }],
-    'import/prefer-default-export': [0],
+    '@typescript-eslint/no-unused-vars': ['error'],
+    'react/jsx-filename-extension': ['error', { extensions: ['.tsx'] }],
+    'react/jsx-curly-newline': 'off',
+    'import/prefer-default-export': 'off',
     'import/extensions': [
       'error',
       'ignorePackages',
