@@ -8,7 +8,7 @@ import './index.css';
 
 const client = new ApolloClient({
   uri: 'http://127.0.0.1:8080/graphql',
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
 });
 
 ReactDOM.render(
@@ -17,5 +17,5 @@ ReactDOM.render(
       <App />
     </ApolloProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );

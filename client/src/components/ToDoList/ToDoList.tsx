@@ -1,17 +1,24 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
-import { ToDos_toDos } from '../../types/ToDos';
+import { ToDos_toDos as ToDos } from '../../types/ToDos';
 import ToDoItem from '../ToDoItem';
 
-type HandleToDoUpdate = ({ id, done: label }: { id: string, label?: string, done?: boolean }) => void;
+type HandleToDoUpdate = ({
+  id,
+  done: label,
+}: {
+  id: string;
+  label?: string;
+  done?: boolean;
+}) => void;
 
 type ToDoListProps = {
-  toDos: ToDos_toDos[],
-  handleToDoUpdate: HandleToDoUpdate,
+  toDos: ToDos[];
+  handleToDoUpdate: HandleToDoUpdate;
 };
 
 const ToDoList = ({ toDos, handleToDoUpdate }: ToDoListProps) => (
-  <Fragment>
+  <>
     {toDos.map((toDo) => (
       <ToDoItem
         toDo={toDo}
@@ -19,7 +26,7 @@ const ToDoList = ({ toDos, handleToDoUpdate }: ToDoListProps) => (
         handleLabelChange={(id, label) => handleToDoUpdate({ id, label })}
       />
     ))}
-  </Fragment>
+  </>
 );
 
 export default ToDoList;

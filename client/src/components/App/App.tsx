@@ -13,11 +13,13 @@ import './App.css';
 
 function App() {
   const { data } = useQuery<ToDos>(queries.AllToDos);
-  const [updateToDo] = useMutation<UpdateToDo, UpdateToDoVariables>(mutations.UpdateToDo);
+  const [updateToDo] = useMutation<UpdateToDo, UpdateToDoVariables>(
+    mutations.UpdateToDo,
+  );
 
   const { toDos } = data ?? {};
 
-  const handleToDoUpdate = ({ id, done, label }: { id: string, label?: string, done?: boolean }) => {
+  const handleToDoUpdate = ({ id, done, label }: UpdateToDoVariables) => {
     updateToDo({
       variables: {
         id,
@@ -25,12 +27,14 @@ function App() {
         label,
       },
     });
-  }
+  };
 
   return (
     <div className="App">
       <header className="App-header">
-        {toDos && <ToDoList toDos={toDos} handleToDoUpdate={handleToDoUpdate} />}
+        {toDos && (
+          <ToDoList toDos={toDos} handleToDoUpdate={handleToDoUpdate} />
+        )}
       </header>
     </div>
   );
