@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export const AllToDos = gql`
+export const allToDos = gql`
   query AllToDos {
     toDos {
       id

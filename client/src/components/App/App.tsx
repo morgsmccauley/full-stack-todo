@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
+import { TextField } from '@material-ui/core';
 
-import { ToDos } from '../../types/ToDos';
-import { UpdateToDo, UpdateToDoVariables } from '../../types/UpdateToDo';
-
-import { AllToDos } from '../../graphql/queries';
-import { UpdateToDo as UpdateToDoMutation } from '../../graphql/mutations';
+import { allToDos as allToDosQuery, AllToDos } from '../../graphql/queries';
+import {
+  updateToDo as updateToDoMutation,
+  UpdateToDo,
+  UpdateToDoVariables,
+  addToDo as addToDoMutation,
+  AddToDo,
+  AddToDoVariables,
+} from '../../graphql/mutations';
 
 import AddButton from '../AddButton';
 import List from '../List';
@@ -14,16 +19,26 @@ import ToDoItem from '../ToDoItem';
 import './App.css';
 
 function App() {
-  const { data: { toDos = [] } = {} } = useQuery<ToDos>(AllToDos);
+  const textField = useRef({ value: '' });
+  const { data: { toDos = [] } = {} } = useQuery<AllToDos>(allToDosQuery);
   const [updateToDo] = useMutation<UpdateToDo, UpdateToDoVariables>(
-    UpdateToDoMutation,
+    updateToDoMutation,
   );
+  const [addToDo] = useMutation<AddToDo, AddToDoVariables>(addToDoMutation);
 
-  const handleToDoUpdate = ({ id, done, label }: UpdateToDoVariables) => {
+  const handleUpdateToDo = ({ id, done, label }: UpdateToDoVariables) => {
     updateToDo({
       variables: {
         id,
         done,
+        label,
+      },
+    });
+  };
+
+  const handleAddToDo = (label: string) => {
+    addToDo({
+      variables: {
         label,
       },
     });
@@ -36,13 +51,15 @@ function App() {
           items={toDos}
           renderItem={(item) => (
             <ToDoItem
+              key={item.id}
               toDo={item}
-              handleDoneChange={(id, done) => handleToDoUpdate({ id, done })}
-              handleLabelChange={(id, label) => handleToDoUpdate({ id, label })}
+              handleDoneChange={(id, done) => handleUpdateToDo({ id, done })}
+              handleLabelChange={(id, label) => handleUpdateToDo({ id, label })}
             />
           )}
         />
-        <AddButton />
+        <TextField inputRef={textField} />
+        <AddButton onClick={() => handleAddToDo(textField.current.value)} />
       </header>
     </div>
   );

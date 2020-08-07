@@ -1,1 +1,2 @@
-export { AllToDos } from './AllToDos';
+export * from './types/AllToDos';
+export { allToDos } from './allToDos';

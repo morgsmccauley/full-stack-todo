@@ -2,8 +2,12 @@ import React from 'react';
 import { Fab } from '@material-ui/core';
 import Add from '@material-ui/icons/Add';
 
-const AddButton = () => (
-  <Fab>
+type AddButtonProps = {
+  onClick: () => void;
+};
+
+const AddButton = ({ onClick }: AddButtonProps) => (
+  <Fab onClick={onClick}>
     <Add />
   </Fab>
 );
